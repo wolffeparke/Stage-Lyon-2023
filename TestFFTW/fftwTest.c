@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
 	in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*N);
 	out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*N);
 	plan = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
-	back_plan = fftw_plan_dft_1d(N, out, out, FFTW_BACKWARD, FFTW_ESTIMATE);
+	back_plan = fftw_plan_dft_1d(N, in, out, FFTW_BACKWARD, FFTW_ESTIMATE);
 
 	//Open data file
 	FILE* fPtr = NULL;
@@ -38,22 +38,32 @@ int main(int argc, char **argv) {
 	fscanf(fPtr, "%lf,%lf\n", &x[N], &y);
 	fclose(fPtr);
 
+	double normalizationY = (double) sqrt(N);
 	//Compute transform in-place
 	fftw_execute(plan);
-	//fftw_execute(back_plan);
-
-	double normalizationY = (double) N/2;
-	double stepX = 2/(x[N] - x[0]);
+	//Uncomment to compute inverse transform
+/*
+	for (int i=N/2;i<N;i++) {
+		in[i][0] = out[i-N/2][0] / normalizationY;
+		in[i-N/2][0] = out[i][0] / normalizationY;
+		in[i][1] = out[i-N/2][1] / normalizationY;
+		in[i-N/2][1] = out[i][1] / normalizationY;
+	}
+	fftw_execute(back_plan);
+*/
+	double stepX = 1/(x[N] - x[0]);
 	double X = -N*stepX/2;
 	for (int i=N/2;i<N;i++) {
 		out[i][0] /= normalizationY;
-		fprintf(outPtr, "%lf,%lf\n", X, fabs(out[i][0]));
+		out[i][1] /= normalizationY;
+		fprintf(outPtr, "%lf,%lf,%lf\n", X, out[i][0], out[i][1]);
 		X += stepX;
 	}
 	X = 0;
 	for (int i=0;i<N/2;i++) {
 		out[i][0] /= normalizationY;
-		fprintf(outPtr, "%lf,%lf\n", X, fabs(out[i][0]));
+		out[i][1] /= normalizationY;
+		fprintf(outPtr, "%lf,%lf,%lf\n", X, out[i][0], out[i][1]);
 		X += stepX;
 	}
 	fclose(outPtr);

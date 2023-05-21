@@ -1,7 +1,7 @@
 #!/bin/bash
 gcc -o GenerateFunction GenerateFunction.c -lm
 echo Successfully compiled function generator
-N=1000
+N=200
 ./GenerateFunction $N
 echo Generated Function
 cat data.csv

@@ -1,11 +1,12 @@
 #!/bin/python3
 import matplotlib.pyplot as plt
+import math
 
 def main():
     inputFile = open("data.csv", "r")
-    input = inputFile.readlines()
+    inputLines = inputFile.readlines()
     x, y = [], []
-    for inputElement in input:
+    for inputElement in inputLines:
         xi, yi = inputElement.split(",")
         x.append(float(xi))
         y.append(float(yi))
@@ -15,13 +16,18 @@ def main():
 
     outputFile = open("transformData.csv", "r")
     output = outputFile.readlines()
-    x, y = [], []
+    x, yReal, yImag, yMag = [], [], [], []
     for outputElement in output:
-        xi, yi = outputElement.split(",")
-        x.append(float(xi))
-        y.append(float(yi))
+        xi, yReali, yImagi = map(float,outputElement.split(","))
+        x.append(xi)
+        yReal.append(yReali)
+        yImag.append(yImagi)
+        yMag.append(math.sqrt(yReali**2+yImagi**2))
 
-    plt.plot(x,y)
+    plt.plot(x,yReal,'b', label="Re(F(k))")
+    plt.plot(x,yImag,'r', label="Im(F(k))")
+    plt.plot(x,yMag,'g', label="|F(k)|^2")
+    plt.legend()
     plt.show()
     return
 
