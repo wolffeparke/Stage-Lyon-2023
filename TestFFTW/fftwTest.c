@@ -8,10 +8,11 @@ int main(int argc, char **argv) {
 	fftw_complex *in, *out;
 	fftw_plan plan, back_plan;
   	int N = atoi(argv[1]);
+	double xMax = atof(argv[2]);
 	in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*N);
 	out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*N);
 	plan = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
-	back_plan = fftw_plan_dft_1d(N, in, out, FFTW_BACKWARD, FFTW_ESTIMATE);
+	back_plan = fftw_plan_dft_1d(N, out, in, FFTW_BACKWARD, FFTW_ESTIMATE);
 
 	//Open data file
 	FILE* fPtr = NULL;
@@ -39,36 +40,46 @@ int main(int argc, char **argv) {
 	fclose(fPtr);
 
 	double normalizationY = (double) sqrt(N);
-	//Compute transform in-place
+	//Compute forward transform
+	printf("Computing transform\n");
 	fftw_execute(plan);
-	//Uncomment to compute inverse transform
-/*
-	for (int i=N/2;i<N;i++) {
-		in[i][0] = out[i-N/2][0] / normalizationY;
-		in[i-N/2][0] = out[i][0] / normalizationY;
-		in[i][1] = out[i-N/2][1] / normalizationY;
-		in[i-N/2][1] = out[i][1] / normalizationY;
-	}
-	fftw_execute(back_plan);
-*/
-	double stepX = 1/(x[N] - x[0]);
-	double X = -N*stepX/2;
+
+	double delK = 1/(2*xMax);
+	double k = -N*delK/2;
+	printf("Normalization\n");
 	for (int i=N/2;i<N;i++) {
 		out[i][0] /= normalizationY;
 		out[i][1] /= normalizationY;
-		fprintf(outPtr, "%lf,%lf,%lf\n", X, out[i][0], out[i][1]);
-		X += stepX;
+		fprintf(outPtr, "%lf,%lf,%lf\n", k, out[i][0], out[i][1]);
+		k += delK;
 	}
-	X = 0;
+	k = 0;
 	for (int i=0;i<N/2;i++) {
 		out[i][0] /= normalizationY;
 		out[i][1] /= normalizationY;
-		fprintf(outPtr, "%lf,%lf,%lf\n", X, out[i][0], out[i][1]);
-		X += stepX;
+		fprintf(outPtr, "%lf,%lf,%lf\n", k, out[i][0], out[i][1]);
+		k += delK;
 	}
+	
+	//Compute inverse transform
+	printf("Computing inverse transform\n");
+	fftw_execute(back_plan);
+	double delX = 2*xMax/N;
+	double X = -xMax;
+	printf("Normalization\n");
+	for (int i=0;i<N;i++) {
+		in[i][0] /= normalizationY;
+		in[i][1] /= normalizationY;
+		fprintf(outPtr, "%lf,%lf,%lf\n", X, in[i][0], in[i][1]);
+		X += delX;
+	}
+
+	printf("Freeing resources");
 	fclose(outPtr);
 	
 	fftw_destroy_plan(plan);
+	fftw_destroy_plan(back_plan);
 	fftw_free(in);
 	fftw_free(out);
+	exit(0);
 }

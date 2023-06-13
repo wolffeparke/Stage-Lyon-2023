@@ -6,9 +6,9 @@
 //Initialize various constants
 const double a = 1.0;
 const double q = 1.0;
-const double m = 1.0;
+const double m = 4.0;
 const double E = 4.0;
-const double V_scatter = 2.0;
+const double V_scatter = 6.0;
 const double hbar = 1.0;
 const double C = 1.0;
 
@@ -74,11 +74,20 @@ int main(int argc, char* argv[]) {
 
 	//Find tranmission & reflection probabilities
 	//Note 4*N corresponds to the point x=0
-	double AplusB = crealf(phi[4*N]);
+	double complex pt1 = phi[4*N];
 	int index = (int) 4*N-M_PI/(2*q*delX);
-	double AminusB = cimagf(phi[index]);
-	double A = (AplusB + AminusB)/2;
-	double B = (AplusB - AminusB)/2;
-	printf("A = %lf, B = %lf, C = %lf\n", A, B, C);
+	double complex pt2 = phi[index];
+	printf("%lf+%lfi, %lf+%lfi\n", crealf(pt1), cimagf(pt1), crealf(pt2), cimagf(pt2));
+	
+	double AcosTh1 = (crealf(pt1) - cimagf(pt2))/2;
+	double AsinTh1 = (cimagf(pt1) + crealf(pt2))/2;
+	double th1 = atan(AsinTh1/AcosTh1);
+	double A = AcosTh1/cos(th1);
+	double BcosTh2 = (crealf(pt1) + cimagf(pt2))/2;
+	double BsinTh2 = (cimagf(pt1) - cimagf(pt2))/2;
+	double th2 = atan(BsinTh2/BcosTh2);
+	double B = BcosTh2/cos(th2);
+	
+	printf("A = %lf, B = %lf, th1 = %lf, th2 = %lf, C = %lf\n", A, B, th1, th2, C);
 	printf("R = %lf, T = %lf\n", B*B/(A*A), C*C/(A*A));
 }
