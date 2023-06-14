@@ -7,12 +7,12 @@ const double TAU = 2*M_PI;
 const double sigma=2;
 const double K = 1;
 const double a = 1;
-const double b = 0;
-const double c = 0;
+const double b = 8.4;
+const double c = -18;
 
 double function(double x) {
 	double result = K*exp(-a*x*x+b*x+c);
-	//double result = cos(TAU*x)+2*cos(2*TAU*x)+3*sin(3*TAU*x);
+	//double result = cos(TAU*x);
 	//double result = sin(a*M_PI*x)/(a*M_PI*x);
 	//result = result*result;
 	return result;	

@@ -1,10 +1,13 @@
 #!/bin/bash
 rm psi.txt
+rm -r animationFrames
+mkdir animationFrames
+rm SOM.gif
 gcc -o GenerateFunction generateFunction.c -lm
 echo Successfully compiled function generator
 Nx=200
 delX=0.1
-Nt=2
+Nt=250
 delT=1
 ./GenerateFunction $Nx $delX
 echo Generated Function
@@ -14,5 +17,10 @@ echo Successfully compiled SOM
 ./SOM $Nx $delX $Nt $delT
 echo Executed SOM
 
-echo Showing plots
+echo Computing plots
 ./plot.py $Nx $delX $Nt $delT
+
+echo Compiling gif
+convert -dispose previous -delay 5 -loop 0 `ls -v animationFrames/t*.png` SOM.gif
+echo Showing gif
+animate SOM.gif
