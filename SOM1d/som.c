@@ -20,8 +20,10 @@ struct kPt {
 };
 
 double V(double x) {
-	return a*x*x;
-	//if (x*x<9) {return 0;} else {return 1;}
+	//return a*x*x-1;
+	//return sin(x);
+	if (x<0) {return 1000;} else {return -1;}
+	//if (x*x<9) {return -1;} else {return 1;}
 	//if (x*x<1) {return 10000;} else {return 0;}
 	//if (x>0) {return x;} else {return -x;}
 }
@@ -47,8 +49,8 @@ int main(int argc, char* argv[]) {
 	struct xPt xPsi[2*(Nt+1)][Nx];
 	FILE* fPtr = fopen("psi.txt", "a+");
 	for (int i=0;i<Nx;i++) {
-		fscanf(fPtr, "%lf,%lf,%lf\n", &xPsi[0][i].x, &xPsi[0][i].re, &xPsi[0][i].im);
-		fprintf(vPtr, "%lf\n", V(xPsi[0][i].x));
+		fscanf(fPtr, "%lf %lf %lf\n", &xPsi[0][i].x, &xPsi[0][i].re, &xPsi[0][i].im);
+		fprintf(vPtr, "%lf %lf\n", xPsi[0][i].x, V(xPsi[0][i].x));
 	}
 	fclose(vPtr);
 	double x = xPsi[0][0].x;
@@ -135,7 +137,7 @@ int main(int argc, char* argv[]) {
 		xPsi[2*t+1][i].x = xPsi[2*t][i].x;
 		prevPt = xPsi[2*t][i].re+xPsi[2*t][i].im*I;
 		nextPt = cexpf(-I*hbar*delT*V(xPsi[2*t+1][i].x)/2) * prevPt;
-		fprintf(fPtr, "%lf,%lf,%lf\n", xPsi[2*t+1][i].x, crealf(nextPt), cimagf(nextPt));
+		fprintf(fPtr, "%lf %lf %lf\n", xPsi[2*t+1][i].x, crealf(nextPt), cimagf(nextPt));
 		nextPt = cexpf(-I*hbar*delT*V(xPsi[2*t+1][i].x)) * prevPt;
 		xPsi[2*t+1][i].re = crealf(nextPt);
 		xPsi[2*t+1][i].im = cimagf(nextPt);
@@ -198,7 +200,7 @@ int main(int argc, char* argv[]) {
 		nextPt = cexpf(-I*hbar*delT*V(xPsi[2*Nt+1][i].x)/2) * prevPt;
 		xPsi[2*Nt+1][i].re = crealf(nextPt);
 		xPsi[2*Nt+1][i].im = cimagf(nextPt);
-		fprintf(fPtr, "%lf,%lf,%lf\n", xPsi[2*Nt+1][i].x, xPsi[2*Nt+1][i].re, xPsi[2*Nt+1][i].im);
+		fprintf(fPtr, "%lf %lf %lf\n", xPsi[2*Nt+1][i].x, xPsi[2*Nt+1][i].re, xPsi[2*Nt+1][i].im);
 	}
 
 	fclose(fPtr);

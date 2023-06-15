@@ -17,7 +17,7 @@ def main():
     for t in range(Nt+1):
         V, x, yRe, yIm, yMag = [], [], [], [], []
         for i in range(t*Nx+1,(t+1)*Nx+1,1):
-            xi, yRei, yImi = inputLines[i].split(",")
+            xi, yRei, yImi = inputLines[i].split(" ")
             x.append(float(xi))
             yRe.append(float(yRei))
             yIm.append(float(yImi))

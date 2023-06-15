@@ -7,8 +7,8 @@ gcc -o GenerateFunction generateFunction.c -lm
 echo Successfully compiled function generator
 Nx=200
 delX=0.1
-Nt=250
-delT=1
+Nt=400
+delT=0.7
 ./GenerateFunction $Nx $delX
 echo Generated Function
 
@@ -18,7 +18,7 @@ echo Successfully compiled SOM
 echo Executed SOM
 
 echo Computing plots
-./plot.py $Nx $delX $Nt $delT
+gnuplot -c "gnuScript.gp" $Nx $Nt
 
 echo Compiling gif
 convert -dispose previous -delay 5 -loop 0 `ls -v animationFrames/t*.png` SOM.gif

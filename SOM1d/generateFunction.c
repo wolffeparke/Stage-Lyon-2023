@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 	double xMax = N*delX/2;
 	double x = -xMax;
 	for (int i=0;i<N+1;i++) {
-		fprintf(fPtr, "%f,%f,0\n", x, function(x));
+		fprintf(fPtr, "%f %f 0\n", x, function(x));
 		x += delX;
 	}
 	fclose(fPtr);
