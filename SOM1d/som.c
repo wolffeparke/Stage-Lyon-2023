@@ -21,8 +21,8 @@ struct kPt {
 
 double V(double x) {
 	//return a*x*x-1;
-	//return sin(x);
-	if (x<0) {return 1000;} else {return -1;}
+	return sin(x);
+	//if (x<0) {return 1000;} else {return 0;}
 	//if (x*x<9) {return -1;} else {return 1;}
 	//if (x*x<1) {return 10000;} else {return 0;}
 	//if (x>0) {return x;} else {return -x;}

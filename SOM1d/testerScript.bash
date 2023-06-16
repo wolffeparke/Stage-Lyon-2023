@@ -8,7 +8,7 @@ echo Successfully compiled function generator
 Nx=200
 delX=0.1
 Nt=400
-delT=0.7
+delT=0.6
 ./GenerateFunction $Nx $delX
 echo Generated Function
 

@@ -7,8 +7,8 @@ const double TAU = 2*M_PI;
 const double sigma=2;
 const double K = 1;
 const double a = 1;
-const double b = 8.4;
-const double c = -18;
+const double b = 0;
+const double c = 0;
 
 double function(double x) {
 	double result = K*exp(-a*x*x+b*x+c);
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 	double delX = atof(argv[2]);
 	double xMax = N*delX/2;
 	double x = -xMax;
-	for (int i=0;i<N+1;i++) {
+	for (int i=0;i<N;i++) {
 		fprintf(fPtr, "%f %f 0\n", x, function(x));
 		x += delX;
 	}
